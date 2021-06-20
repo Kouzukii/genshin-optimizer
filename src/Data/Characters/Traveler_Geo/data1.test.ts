@@ -15,7 +15,7 @@ describe("Agent RAF#3111 Traveler Geo", () => {
       weaponType: "sword", weaponATK: 401,
 
       atk_: 24, // Specialize stat
-      critRate_: 5+ 28, // Harbinger of Dawn Passive
+      critRate_: 5 + 28, // Harbinger of Dawn Passive
       critDMG_: 50 + 46.9, // Harbinger of Dawn Sub
       physical_enemyRes_: 70, //Ruin guardian
       enemyLevel: 85,
@@ -31,22 +31,23 @@ describe("Agent RAF#3111 Traveler Geo", () => {
     describe("no crit", () => {
       beforeEach(() => setupStats.hitMode = "hit")
 
-        test("hits", () => {
-          const stats = computeAllStats(setupStats)
-          expect(formula.normal[0](stats)[0](stats)).toApproximate(76) //failing expects 52
-          expect(formula.normal[1](stats)[0](stats)).toApproximate(74) //failing expects 51
-          expect(formula.normal[2](stats)[0](stats)).toApproximate(90) //failing expects 62
-          expect(formula.normal[3](stats)[0](stats)).toApproximate(99) //failing expects 69
-          expect(formula.normal[4](stats)[0](stats)).toApproximate(121) //failing expects 84
-          expect(formula.charged[0](stats)[0](stats)).toApproximate(95) //failing expects 66
-          expect(formula.charged[1](stats)[0](stats)).toApproximate(234) //failing expects 72
-          expect(formula.plunging.dmg(stats)[0](stats)).toApproximate(109) //failing expects 75
-          expect(formula.plunging.low(stats)[0](stats)).toApproximate(218) //failing expects 151
-          expect(formula.plunging.high(stats)[0](stats)).toApproximate(273) //failing expects 189
-          expect(formula.skill.dmg(stats)[0](stats)).toApproximate(2918) //failing expects 1598
-          expect(formula.burst.dmg(stats)[0](stats)).toApproximate(1920) //failing expects 1119
-          expect(formula.passive2.geoAuto(stats)[0](stats)).toApproximate(415) //failing expects 227
-        })
+      test("hits", () => {
+        const stats = computeAllStats(setupStats)
+        expect(formula.normal[0](stats)[0](stats)).toApproximate(76) //failing expects 52
+        expect(formula.normal[1](stats)[0](stats)).toApproximate(74) //failing expects 51
+        expect(formula.normal[2](stats)[0](stats)).toApproximate(90) //failing expects 62
+        expect(formula.normal[3](stats)[0](stats)).toApproximate(99) //failing expects 69
+        expect(formula.normal[4](stats)[0](stats)).toApproximate(121) //failing expects 84
+        expect(formula.charged[0](stats)[0](stats)).toApproximate(95) //failing expects 66
+        expect(formula.charged[1](stats)[0](stats)).toApproximate(234) //failing expects 72
+        expect(formula.plunging.dmg(stats)[0](stats)).toApproximate(109) //failing expects 75
+        expect(formula.plunging.low(stats)[0](stats)).toApproximate(218) //failing expects 151
+        expect(formula.plunging.high(stats)[0](stats)).toApproximate(273) //failing expects 189
+        expect(formula.skill.dmg(stats)[0](stats)).toApproximate(2918) //failing expects 1598
+        expect(formula.burst.dmg(stats)[0](stats)).toApproximate(1920) //failing expects 1119
+        expect(formula.passive2.geoAuto(stats)[0](stats)).toApproximate(415) //failing expects 227
+        // expect(stats.shattered_dmg_).toApproximate(425) //invalid due to 1.6
+      })
     })
     describe("crit", () => {
       beforeEach(() => setupStats.hitMode = "critHit")

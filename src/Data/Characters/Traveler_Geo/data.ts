@@ -36,7 +36,7 @@ export const data = {
     dmg: [248, 266.6, 285.2, 310, 328.6, 347.2, 372, 396.8, 421.6, 446.4, 471.2, 496, 527, 558, 589],
   },
   burst: {
-    dmg: [148, 159.1, 170.2, 185,196.1, 207.2, 222, 236.8, 251.6, 266.4, 281.2, 296, 314.5, 333, 351.5],
+    dmg: [148, 159.1, 170.2, 185, 196.1, 207.2, 222, 236.8, 251.6, 266.4, 281.2, 296, 314.5, 333, 351.5],
   }
 }
 
@@ -46,8 +46,10 @@ const formula: IFormulaSheet = {
   charged: Object.fromEntries(data.charged.hitArr.map((percentArr, i) => [i, stats =>
     basicDMGFormula(percentArr[stats.tlvl.auto], stats, "charged")])),
   plunging: Object.fromEntries(Object.entries(data.plunging).map(([key, arr]) => [key, stats => basicDMGFormula(arr[stats.tlvl.auto], stats, "plunging")])),
-  skill: Object.fromEntries(Object.entries(data.skill).map(([name, arr]) =>
-    [name, stats => basicDMGFormula(arr[stats.tlvl.skill], stats, "skill")])),
+  skill: {
+    dmg: stats => basicDMGFormula(data.skill.dmg[stats.tlvl.skill], stats, "skill"),
+    exp: stats => basicDMGFormula(data.skill.dmg[stats.tlvl.skill], stats, "skill")
+  },
   burst: Object.fromEntries(Object.entries(data.burst).map(([name, arr]) =>
     [name, stats => basicDMGFormula(arr[stats.tlvl.burst], stats, "burst")])),//not optimizationTarget, dont need to precompute
   passive2: {

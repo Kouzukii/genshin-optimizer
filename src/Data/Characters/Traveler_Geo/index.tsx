@@ -99,7 +99,7 @@ const char: ICharacterSheet = {
           canShow: stats => stats.constellation >= 2,
           text: "Meteorite Explosion DMG",
           formulaText: stats => <span>{data.skill.dmg[stats.tlvl.skill]}% {Stat.printStat(getTalentStatKey("skill", stats), stats)}</span>,
-          formula: formula.skill.dmg,
+          formula: formula.skill.exp,
           variant: stats => getTalentStatKeyVariant("skill", stats),
         }, {
           text: "Base CD",
