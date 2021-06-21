@@ -220,7 +220,7 @@ function SkillDisplayCard({ characterSheet, character: { constellation, talentLe
     </Card>
   </Col></Row>
 
-  const document = characterSheet.getTalent(talentKey)?.document
+  const sections = characterSheet.getTalent(talentKey)?.sections
   return <Card bg="lightcontent" text={"lightfont" as any} className="h-100">
     {header}
     <Card.Body className="mb-n2">
@@ -234,7 +234,7 @@ function SkillDisplayCard({ characterSheet, character: { constellation, talentLe
         </Col>
       </Row>
       {/* Display document sections */}
-      {document ? <DocumentDisplay {...{ document, characterDispatch, equippedBuild, newBuild, editable }} /> : null}
+      {sections ? <DocumentDisplay {...{ sections, characterDispatch, equippedBuild, newBuild, editable }} /> : null}
       {statsEle}
     </Card.Body>
   </Card>

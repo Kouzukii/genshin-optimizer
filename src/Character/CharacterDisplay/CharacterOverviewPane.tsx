@@ -264,7 +264,7 @@ function WeaponStatsEditorCard({ characterSheet, weaponSheet, editable, characte
             {Boolean(conditionals) && Object.entries(conditionals).map(([stateKey, conditional]) =>
               <ConditionalDisplay key={stateKey as any} {...{ conditional, equippedBuild, newBuild, characterDispatch, editable }} fieldClassName="py-2 px-3" />)}
 
-            {document ? <DocumentDisplay {...{ document, equippedBuild, newBuild, characterDispatch, editable }} /> : null}
+            {document ? <DocumentDisplay {...{ sections: document, equippedBuild, newBuild, characterDispatch, editable }} /> : null}
           </Col>}
       </Row>
       {showDescription && <small>{weaponSheet.description}</small>}

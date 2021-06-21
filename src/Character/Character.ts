@@ -227,54 +227,28 @@ export default class Character {
     const transReactions = deepClone(ElementToReactionKeys[eleKey])
     const weaponTypeKey = characterSheet.weaponTypeKey
     if (!transReactions.includes("shattered_hit") && weaponTypeKey === "claymore") transReactions.push("shattered_hit")
-    if (Formula.formulas.character?.[characterKey]) {
-      const charFormulas = {}
-      Object.entries(Formula.formulas.character[characterKey]).forEach(([talentKey, formulas]: any) => {
-        Object.values(formulas as any).forEach((formula: any) => {
-          if (!formula.field.canShow(stats)) return
-          if (talentKey === "normal" || talentKey === "charged" || talentKey === "plunging") talentKey = "auto"
-          const formKey = `talentKey_${talentKey}`
-          if (!charFormulas[formKey]) charFormulas[formKey] = []
-          charFormulas[formKey].push(formula.keys)
-        })
+    const charFormulas = {}
+    Object.entries(Formula.formulas.character[characterKey]).forEach(([talentKey, formulas]: any) => {
+      Object.values(formulas as any).forEach((formula: any) => {
+        if (!formula.field.canShow(stats)) return
+        if (talentKey === "normal" || talentKey === "charged" || talentKey === "plunging") talentKey = "auto"
+        const formKey = `talentKey_${talentKey}`
+        if (!charFormulas[formKey]) charFormulas[formKey] = []
+        charFormulas[formKey].push(formula.keys)
       })
+    })
 
-      const weaponFormulas = Formula.formulas.weapon[stats.weapon.key]
+    const weaponFormulas = Formula.formulas.weapon[stats.weapon.key]
 
-      if (weaponFormulas) {
-        Object.values(weaponFormulas as any).forEach((formula: any) => {
-          if (!formula.field.canShow(stats)) return
-          const formKey = `weapon_${stats.weapon.key}`
-          if (!charFormulas[formKey]) charFormulas[formKey] = []
-          charFormulas[formKey].push(formula.keys)
-        })
-      }
-      return { basicKeys, ...charFormulas, transReactions }
-    } else {//TODO: doesnt have character sheet
-      //generic average hit parameters.
-      const genericAvgHit: string[] = []
-      if (!isAutoElemental) //add phy auto + charged + physical
-        genericAvgHit.push("physical_normal_avgHit", "physical_charged_avgHit")
-
-      else if (weaponTypeKey === "bow") {//bow charged atk does elemental dmg on charge
-        genericAvgHit.push(`${eleKey}_charged_avgHit`)
-      }
-      //show skill/burst
-      genericAvgHit.push(`${eleKey}_skill_avgHit`, `${eleKey}_burst_avgHit`)
-
-      //add reactions.
-      if (eleKey === "pyro") {
-        const reactions: string[] = []
-        reactions.push(...genericAvgHit.filter(key => key.startsWith(`${eleKey}_`)).map(key => key.replace(`${eleKey}_`, `${eleKey}_vaporize_`)))
-        reactions.push(...genericAvgHit.filter(key => key.startsWith(`${eleKey}_`)).map(key => key.replace(`${eleKey}_`, `${eleKey}_melt_`)))
-        genericAvgHit.push(...reactions)
-      } else if (eleKey === "cryo")
-        genericAvgHit.push(...genericAvgHit.filter(key => key.startsWith(`${eleKey}_`)).map(key => key.replace(`${eleKey}_`, `${eleKey}_melt_`)))
-      else if (eleKey === "hydro")
-        genericAvgHit.push(...genericAvgHit.filter(key => key.startsWith(`${eleKey}_`)).map(key => key.replace(`${eleKey}_`, `${eleKey}_vaporize_`)))
-
-      return { basicKeys, genericAvgHit, transReactions }
+    if (weaponFormulas) {
+      Object.values(weaponFormulas as any).forEach((formula: any) => {
+        if (!formula.field.canShow(stats)) return
+        const formKey = `weapon_${stats.weapon.key}`
+        if (!charFormulas[formKey]) charFormulas[formKey] = []
+        charFormulas[formKey].push(formula.keys)
+      })
     }
+    return { basicKeys, ...charFormulas, transReactions }
   }
   static getDisplayHeading(key: string, characterSheet: CharacterSheet, weaponSheet: WeaponSheet) {
     if (key === "basicKeys") return "Basic Stats"

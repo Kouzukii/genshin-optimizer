@@ -317,7 +317,7 @@ export default function BuildDisplay({ location: { characterKey: propCharacterKe
                     </Card.Header>
                   </Card>}
                 {/* Hit mode options */}
-                {!!characterSheet?.hasTalentPage && character && <HitModeCard characterSheet={characterSheet} className="mb-2" character={character} />}
+                {characterSheet && character && <HitModeCard characterSheet={characterSheet} className="mb-2" character={character} />}
                 {/* Final Stat Filter */}
                 {Boolean(statsDisplayKeys) && <StatFilterCard className="mb-2" statFilters={statFilters} statKeys={statsDisplayKeys?.basicKeys as any} setStatFilters={sFs => buildSettingsDispatch({ statFilters: sFs })} />}
               </Col>

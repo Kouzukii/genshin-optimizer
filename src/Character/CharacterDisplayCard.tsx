@@ -1,13 +1,12 @@
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { createContext, useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
-import { Alert, Badge, ButtonGroup, Dropdown, DropdownButton, Image, Nav, Tab } from 'react-bootstrap';
+import { Alert, ButtonGroup, Dropdown, DropdownButton, Image, Nav, Tab } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import { ArtifactSheet } from '../Artifact/ArtifactSheet';
-import WIPComponent from '../Components/WIPComponent';
 import { WeaponLevelKeys } from '../Data/WeaponData';
 import CharacterDatabase from '../Database/CharacterDatabase';
 import { ICharacter } from '../Types/character';
@@ -177,7 +176,7 @@ export default function CharacterDisplayCard({ characterKey: propCharacterKey, c
   const commonPaneProps = { character, newBuild, equippedBuild: (!newBuild || compareAgainstEquipped) ? equippedBuild : undefined, editable, characterDispatch, compareAgainstEquipped }
   if (flexArts) (commonPaneProps as any).artifacts = flexArts//from flex
   // main CharacterDisplayCard
-  const DamageOptionsAndCalculationEle = characterSheet?.hasTalentPage && weaponSheet && <DamageOptionsAndCalculation {...{ characterSheet, weaponSheet, character, characterDispatch, newBuild, equippedBuild }} className="mb-2" />
+  const DamageOptionsAndCalculationEle = characterSheet && weaponSheet && <DamageOptionsAndCalculation {...{ characterSheet, weaponSheet, character, characterDispatch, newBuild, equippedBuild }} className="mb-2" />
   return (<Card bg="darkcontent" text={"lightfont" as any} >
     <Card.Header>
       <Row>
@@ -217,12 +216,7 @@ export default function CharacterDisplayCard({ characterKey: propCharacterKey, c
               <Nav.Link eventKey="artifacts"><h5 className="mb-0">{newBuild ? "Current Artifacts" : "Artifacts"}</h5></Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              {process.env.NODE_ENV !== "development" && !characterSheet.hasTalentPage ?
-                <WIPComponent>
-                  <Nav.Link eventKey="talent" disabled><h5 className="mb-0">Talents</h5> <Badge variant="warning">WIP</Badge></Nav.Link>
-                </WIPComponent> :
-                <Nav.Link eventKey="talent"><h5 className="mb-0">Talents</h5></Nav.Link>
-              }
+              <Nav.Link eventKey="talent"><h5 className="mb-0">Talents</h5></Nav.Link>
             </Nav.Item>
           </Nav>
           <Tab.Content>

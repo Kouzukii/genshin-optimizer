@@ -25,16 +25,15 @@ export default class CharacterSheet {
   get specializeStat() { return this.sheet.specializeStat }
   get baseStat() { return this.sheet.baseStat }
   get talent() { return this.sheet.talent }
-  get formula() { return this.sheet.formula }
-  get conditionals() { return this.sheet.conditionals }
+  get formula() { return this.sheet.talent.formula }
+  get conditionals() { return this.sheet.talent.conditionals }
   get isAutoElemental() { return this.sheet.weaponTypeKey === "catalyst" }
   isMelee = () => {
     const weaponTypeKey = this.sheet.weaponTypeKey
     return weaponTypeKey === "sword" || weaponTypeKey === "polearm" || weaponTypeKey === "claymore"
   }
 
-  getTalent = (talentKey: string) => this.talent[talentKey]
-  get hasTalentPage() { return Boolean(Object.keys(this.sheet.talent).length) } //TODO: remove when all chararacter sheets are complete
+  getTalent = (talentKey: string) => this.talent.sheets[talentKey]
 
   getTalentStats = (talentKey: string, stats: ICalculatedStats) => {
     const [, constell] = talentKey.split("constellation")

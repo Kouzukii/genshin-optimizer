@@ -1,5 +1,7 @@
 import characters from './index'
 import Formula from '../../Formula'//load the formula processing
+import { ICharacterSheet } from '../../Types/character'
+import { CharacterKey } from '../../Types/consts'
 expect.extend({
   toBeValidField(field, fieldStr) {
     if (field.formula && !field.formula.keys) return {
@@ -19,8 +21,8 @@ expect.extend({
       pass: true
     }
   },
-  toBeValidCharacterSheet(charSheet, characterKey) {
-    if (charSheet.formula !== (Formula.formulas as any).character[characterKey]) return {
+  toBeValidCharacterSheet(charSheet: ICharacterSheet, characterKey: CharacterKey) {
+    if (charSheet.talent.formula !== (Formula.formulas as any).character[characterKey]) return {
       message: () => `Character sheet: ${characterKey}.formula is not being brought into Formula properly.`,
       pass: false
     }
@@ -32,11 +34,11 @@ expect.extend({
 })
 test('validate character sheet', () => {
   Object.entries(characters).forEach(([characterKey, char]) => {
-    Object.keys(char.talent).length && expect(char).toBeValidCharacterSheet(characterKey) //TODO: escape for character with imcomplete characer sheet
-    Object.entries(char.talent).forEach(([talentKey, talent]) =>
-      talent.document.forEach((section, sectionIndex) =>
+    expect(char).toBeValidCharacterSheet(characterKey)
+    Object.entries(char.talent.sheets).forEach(([talentKey, talent]) =>
+      talent.sections.forEach((section, sectionIndex) =>
         section.fields?.forEach?.((field, fieldIndex) => {
-          expect(field).toBeValidField(`${characterKey}.${talentKey}.document[${sectionIndex}].fields[${fieldIndex}]`)
+          expect(field).toBeValidField(`${characterKey}.${talentKey}.sections[${sectionIndex}].fields[${fieldIndex}]`)
         })))
   })
 })

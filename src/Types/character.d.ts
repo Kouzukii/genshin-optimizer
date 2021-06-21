@@ -14,8 +14,6 @@ export interface ICharacterSheet {
   titles: Array<string>,
   baseStat: IBaseStat
   specializeStat: ISpecializedStat,
-  formula: object, //TODO: IFormulaSheet when all sheets are done
-  conditionals: IConditionals,
   talent: TalentSheet,
 }
 interface IBaseStat {
@@ -54,12 +52,16 @@ export interface ICharacter {
   buildSettings?: object
 }
 
-export type TalentSheet = Dict<string, TalentSheetElement>
+export type TalentSheet = {
+  formula: IFormulaSheet,
+  conditionals: IConditionals,
+  sheets: Dict<string, TalentSheetElement>
+}
 
 export interface TalentSheetElement {
   name: Displayable, //talentName
   img: string,
-  document: Array<DocumentSection>,
+  sections: Array<DocumentSection>,
   stats?: object,
 }
 export interface DocumentSection {
