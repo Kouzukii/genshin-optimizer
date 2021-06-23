@@ -23,8 +23,7 @@ import razor from './Razor'
 import rosaria from './Rosaria'
 import sucrose from './Sucrose'
 import tartaglia from './Tartaglia'
-import traveler_anemo from './Traveler_Anemo'
-import traveler_geo from './Traveler_Geo'
+import traveler from './Traveler'
 import venti from './Venti'
 import xiao from './Xiao'
 import xiangling from './Xiangling'
@@ -61,8 +60,7 @@ const characters: StrictDict<CharacterKey, ICharacterSheet> = {
   rosaria,
   sucrose,
   tartaglia,
-  traveler_anemo,
-  traveler_geo,
+  traveler,
   venti,
   xiao,
   xiangling,
@@ -72,7 +70,13 @@ const characters: StrictDict<CharacterKey, ICharacterSheet> = {
   zhongli
 };
 
-Object.values(characters).forEach(char =>
-  Object.values(char.talent.sheets).forEach(talentSheetElement =>
-    documentSectionsProcessing(talentSheetElement.sections)))
+Object.values(characters).forEach(char => {
+  if ("talent" in char)
+    Object.values(char.talent.sheets).forEach(talentSheetElement =>
+      documentSectionsProcessing(talentSheetElement.sections))
+  else //char.talents -> traveler
+    Object.values(char.talents).forEach(talentSheet =>
+      Object.values(talentSheet.sheets).forEach(talentSheetElement =>
+        documentSectionsProcessing(talentSheetElement.sections)))
+})
 export default characters

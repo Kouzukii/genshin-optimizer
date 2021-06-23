@@ -21,11 +21,26 @@ expect.extend({
       pass: true
     }
   },
-  toBeValidCharacterSheet(charSheet: ICharacterSheet, characterKey: CharacterKey) {
-    if (charSheet.talent.formula !== (Formula.formulas as any).character[characterKey]) return {
-      message: () => `Character sheet: ${characterKey}.formula is not being brought into Formula properly.`,
-      pass: false
+  async toBeValidCharacterSheet(charSheet: ICharacterSheet, characterKey: CharacterKey) {
+    if ("talent" in charSheet) {
+      const charformula = await Formula.get(["character", characterKey])
+      if (charSheet.talent.formula !== charformula) return {
+        message: () => `Character sheet: ${characterKey}.formula is not being brought into Formula properly.`,
+        pass: false
+      }
+    } else {
+      for (const eleKey of Object.keys(charSheet.talents)) {
+        const talentSheet = charSheet.talents[eleKey]
+        if (!talentSheet) continue
+        const charformula = await Formula.get(["character", characterKey, eleKey])
+        if (talentSheet.formula !== charformula) return {
+          message: () => `Character sheet: ${characterKey}.${eleKey}.formula is not being brought into Formula properly.`,
+          pass: false
+        }
+      }
+
     }
+
     return {
       message: () => `Character sheet: ${characterKey} is valid.`,
       pass: true
@@ -35,11 +50,19 @@ expect.extend({
 test('validate character sheet', () => {
   Object.entries(characters).forEach(([characterKey, char]) => {
     expect(char).toBeValidCharacterSheet(characterKey)
-    Object.entries(char.talent.sheets).forEach(([talentKey, talent]) =>
-      talent.sections.forEach((section, sectionIndex) =>
-        section.fields?.forEach?.((field, fieldIndex) => {
-          expect(field).toBeValidField(`${characterKey}.${talentKey}.sections[${sectionIndex}].fields[${fieldIndex}]`)
-        })))
+    if ("talent" in char)
+      Object.entries(char.talent.sheets).forEach(([talentKey, talent]) =>
+        talent.sections.forEach((section, sectionIndex) =>
+          section.fields?.forEach?.((field, fieldIndex) => {
+            expect(field).toBeValidField(`${characterKey}.${talentKey}.sections[${sectionIndex}].fields[${fieldIndex}]`)
+          })))
+    else //char.talents -> traveler
+      Object.entries(char.talents).forEach(([eleKey, talentSheet]) =>
+        Object.entries(talentSheet.sheets).forEach(([talentKey, talent]) =>
+          talent.sections.forEach((section, sectionIndex) =>
+            section.fields?.forEach?.((field, fieldIndex) => {
+              expect(field).toBeValidField(`${characterKey}.${eleKey}.${talentKey}.sections[${sectionIndex}].fields[${fieldIndex}]`)
+            }))))
   })
 })
 

@@ -1,21 +1,28 @@
-import { CharacterKey } from "./consts";
+import { CharacterKey, ElementKey, WeaponTypeKey } from "./consts";
 import ICalculatedStats from "./ICalculatedStats";
 import IConditional, { IConditionals } from "./IConditional";
 import { IFieldDisplay } from "./IFieldDisplay";
-export interface ICharacterSheet {
+interface ICharacterSheetBase {
   name: Displayable,
   cardImg: string,
   thumbImg: string,
   star: Rarity,
-  elementKey: ElementKey
   weaponTypeKey: WeaponTypeKey
   gender: string,
   constellationName: Displayable,
   titles: Array<string>,
   baseStat: IBaseStat
   specializeStat: ISpecializedStat,
+
+}
+interface IcharacterSheetTalent extends ICharacterSheetBase {
+  elementKey: ElementKey
   talent: TalentSheet,
 }
+interface ICharacterSheetTalents extends ICharacterSheetBase {
+  talents: Dict<ElementKey, TalentSheet>
+}
+export type ICharacterSheet = IcharacterSheetTalent | ICharacterSheetTalents
 interface IBaseStat {
   characterHP: number[]
   characterATK: number[]
@@ -29,8 +36,9 @@ interface ISpecializedStat {
 export interface ICharacter {
   characterKey: CharacterKey
   levelKey: string
-  hitMode: string
-  reactionMode: string | null
+  hitMode: HitModeKey
+  elementKey?: ElementKey
+  reactionMode: reactionModeKey | null
   equippedArtifacts: StrictDict<SlotKey, string>,
   conditionalValues: any,
   baseStatOverrides: {},//overriding the baseStat
@@ -46,7 +54,7 @@ export interface ICharacter {
     skill: number
     burst: number
   },
-  infusionAura: string
+  infusionAura: ElementKey | ""
   constellation: number
   artifacts?: any[]//from flex TODO: type
   buildSettings?: object
@@ -71,7 +79,6 @@ export interface DocumentSection {
   conditional?: IConditional,
 }
 
-export type IFormulaSheets = Dict<string, IFormulaSheet>
 
 export interface IFormulaSheet {
   normal: ISubFormula

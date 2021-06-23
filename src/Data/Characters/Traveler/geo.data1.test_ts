@@ -1,5 +1,5 @@
 import { applyArtifacts, computeAllStats, createProxiedStats, parseTestFlexObject } from "../TestUtils"
-import formula from "./data"
+import formula from "./geoData"
 
 let setupStats
 

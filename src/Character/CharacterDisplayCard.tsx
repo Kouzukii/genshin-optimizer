@@ -7,6 +7,7 @@ import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import { ArtifactSheet } from '../Artifact/ArtifactSheet';
+import ElementalData from '../Data/ElementalData';
 import { WeaponLevelKeys } from '../Data/WeaponData';
 import CharacterDatabase from '../Database/CharacterDatabase';
 import { ICharacter } from '../Types/character';
@@ -146,6 +147,10 @@ export default function CharacterDisplayCard({ characterKey: propCharacterKey, c
       characterDispatch({ weapon: character.weapon })
     }
   }, [characterSheet, weaponSheets, character.weapon])
+  useEffect(() => {//check for default value for traveler
+    if (characterSheet && "talents" in characterSheet.sheet && !character.elementKey)
+      characterDispatch({ elementKey: Object.keys(characterSheet.sheet.talents)[0] })
+  }, [character.elementKey, characterSheet])
 
   const weaponSheet = usePromise(WeaponSheet.get(character.weapon.key))
   const artifactSheets = usePromise(ArtifactSheet.getAll())
@@ -163,8 +168,8 @@ export default function CharacterDisplayCard({ characterKey: propCharacterKey, c
   const newBuild = useMemo(() => {
     if (!propNewBuild) return
     const newBuild = propNewBuild && deepClone(propNewBuild);
-    (newBuild as any).hitMode = character.hitMode;
-    (newBuild as any).reactionMode = character.reactionMode;
+    newBuild.hitMode = character.hitMode;
+    newBuild.reactionMode = character.reactionMode;
     return newBuild
   }, [propNewBuild, character.hitMode, character.reactionMode])
 
@@ -254,7 +259,7 @@ type CharSelectDropdownProps = {
   characterDispatch: (any) => void
   setCharacterKey: (any) => void
 }
-function CharSelectDropdown({ characterSheet, weaponSheet, character, editable, levelKey, characterDispatch, setCharacterKey }: CharSelectDropdownProps) {
+function CharSelectDropdown({ characterSheet, weaponSheet, character, character: { elementKey = "anemo" }, editable, levelKey, characterDispatch, setCharacterKey }: CharSelectDropdownProps) {
   const HeaderIconDisplay = characterSheet ? <span >
     <Image src={characterSheet.thumbImg} className="thumb-small my-n1 ml-n2" roundedCircle />
     <h6 className="d-inline"> {characterSheet.name} </h6>
@@ -268,6 +273,15 @@ function CharSelectDropdown({ characterSheet, weaponSheet, character, editable, 
         {[...allCharacterKeys].sort().map(charKey => <CharDropdownItem key={charKey} characterKey={charKey} setCharacterKey={setCharacterKey} />)}
       </Dropdown.Menu>
     </Dropdown>
+    {characterSheet?.sheet && "talents" in characterSheet?.sheet && <Dropdown as={ButtonGroup}>
+      <Dropdown.Toggle as={Button} className={`text-${elementKey}`}>
+        <strong>{ElementalData[elementKey].name}</strong>
+      </Dropdown.Toggle>
+      <Dropdown.Menu >
+        {Object.keys(characterSheet.sheet.talents).map(eleKey =>
+          <Dropdown.Item key={eleKey} className={`text-${eleKey}`} onClick={() => characterDispatch({ elementKey: eleKey })}><strong>{ElementalData[eleKey].name}</strong></Dropdown.Item>)}
+      </Dropdown.Menu>
+    </Dropdown>}
     <DropdownButton as={ButtonGroup} disabled={!characterSheet} title={
       <h6 className="d-inline">Stats Template: {Character.getlevelTemplateName(levelKey)} </h6>
     }>
